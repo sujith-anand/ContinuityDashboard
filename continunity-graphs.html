@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuity Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 100%;
+            gap: 20px;
+        }
+
+      
+        .chartCard {
+            flex: 1 1 calc(25% - 20px);
+            padding: 20px;
+            border: 1px solid #E9ECEF;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+            gap: 20px;
+        }
+        .toDoCard {
+            flex: 1 1 calc(50% - 20px);
+            padding: 20px;
+            border: 1px solid #E9ECEF;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+            gap: 20px;
+        }
+
+        .helpCard {
+            flex: 1 1 calc(25% - 20px);
+            padding: 20px;
+            border: 1px solid #E9ECEF;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+            gap: 20px;
+        }
+
+
+
+
+        @media (max-width: 768px) {
+            .card {
+                flex: 1 1 100%;
+            }
+        }
+
+        .card-title {
+            color: #495057;
+            font-size: 22.50px;
+            font-family: Roboto Condensed;
+            font-weight: 400;
+            word-wrap: break-word;
+        }
+
+        .status-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .status {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .past-due {
+            background-color: #A155B9;
+        }
+
+        .due-today {
+            background-color: #F765A3;
+        }
+
+        .completed {
+            background-color: #3AA6B9;
+        }
+
+        .todo-list {
+            width: 100%;
+        }
+
+        .todo-items {
+            margin-top: 40px;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .progress-bar {
+            position: relative;
+            height: 5px;
+            background-color: #E9ECEF;
+            border-radius: 10px;
+        }
+
+        .progress-fill {
+            position: absolute;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .help-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .help-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            color: #279FCD;
+        }
+
+        .help-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #279FCD;
+        }
+
+        .title-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #495057;
+        }
+
+        /* Donut chart and legend layout */
+        .chart-legend-wrapper {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            width: 100%;
+        }
+
+        .pie-chart {
+            max-width: 172px;
+            max-height: 172px;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-left: 20px;
+        }
+
+        .legend-title {
+            color: black;
+            font-size: 20px;
+            font-family: Roboto;
+            font-weight: 400;
+            word-wrap: break-word
+        }
+
+        .legend-subtitle {
+            color: black;
+            font-size: 32px;
+            font-family: Roboto;
+            font-weight: 400;
+            word-wrap: break-word
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-value {
+
+            color: black;
+            font-size: 16px;
+            font-family: Roboto;
+            font-weight: 400;
+            word-wrap: break-word
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .past-due-dot {
+            background-color: #A155B9;
+        }
+
+        .due-today-dot {
+            background-color: #F765A3;
+        }
+
+        .completed-dot {
+            background-color: #3AA6B9;
+        }
+
+        /* Dropdown styling */
+        .dropdown-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .dropdown {
+            padding: 5px;
+            border: 1px solid #E9ECEF;
+            border-radius: 4px;
+            background-color: #fff;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Card 1 with Donut Chart and Legend -->
+        <div class="chartCard">
+            <div class="chart-legend-wrapper">
+                <!-- Donut chart -->
+                <canvas id="myDonutChart" class="pie-chart"></canvas>
+
+                <!-- Legend -->
+                <div class="legend">
+                    <div>
+                        <div class="legend-title">Total Tasks</div>
+                        <div class="legend-subtitle">120</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot past-due-dot"></div>
+                        <div class="legend-value">Past Due</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot due-today-dot"></div>
+                        <div class="legend-value">Due Today</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot completed-dot"></div>
+                        <div class="legend-value">Completed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 - ToDo List with Dropdown -->
+        <div class="toDoCard">
+            <div class="dropdown-wrapper">
+                <div class="card-title">List of ToDos</div>
+
+                <!-- Dropdown -->
+                <select class="dropdown">
+                    <option value="15">Last 15 days</option>
+                    <option value="30">Last 30 days</option>
+                </select>
+            </div>
+
+            <div class="todo-list">
+                <div class="todo-item todo-items">
+                    <span>Past Due</span>
+                    <span>40</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%; background-color: #A155B9;"></div>
+                </div>
+
+                <div class="todo-item todo-items">
+                    <span>Due Today</span>
+                    <span>30</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 30%; background-color: #F765A3;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 - Help Section -->
+        <div class="helpCard">
+            <div class="help-item">
+                <div class="title-icon"> </div>
+                <div class="card-title">Need Help?</div>
+            </div>
+            <div class="help-section">
+                <div class="help-item">
+                    <div class="help-icon"></div>
+                    Help
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"></div>
+                    Support Center
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"></div>
+                    My Cases
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"></div>
+                    Ask a Compliance Question
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"></div>
+                    Submit a Support Request
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Donut chart data
+        const ctx = document.getElementById('myDonutChart').getContext('2d');
+        const myDonutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Past Due', 'Due Today', 'Completed'],
+                datasets: [{
+                    data: [40, 30, 50],
+                    backgroundColor: ['#A155B9', '#F765A3', '#3AA6B9'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',  // Make it a donut
+                plugins: {
+                    legend: {
+                        display: false // We use custom legend in HTML
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
